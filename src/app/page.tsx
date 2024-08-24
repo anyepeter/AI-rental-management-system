@@ -1,113 +1,329 @@
+import GoogleMap from "@/components/googleMap";
+import Navbar from "@/components/navbar";
+import SearchForm from "@/components/searchForm";
 import Image from "next/image";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { MdAccountCircle } from "react-icons/md";
+import { CalendarClock,MapPin, StarIcon } from "lucide-react";
+import Footer from "@/components/footer";
+
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <section className="flex w-full flex-col   items-center justify-center pt-26">
+      <Navbar />
+      <div className="flex flex-col items-center w-full h-[80vh] bg-red-400 justify-center">
+        <GoogleMap />
+      </div>
+      <div className="w-full flex justify-center p-2 pt-6 pb-8 md:p-4 md:pt-8 md:pb-12 items-center bg-[#F5F5F5] ">
+        <SearchForm />
+      </div>
+      <main className="w-full max-w-[1350px] mb-10 md:mb-20 flex flex-col p-2 md:p-4 items-center justify-center">
+
+        <div className="w-full flex flex-col items-center justify-center pt-12">
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-3xl md:text-4xl font-comfortaa   ">
+              Recent Apartments
+            </h1>
+
+            <hr className='mt-6 h-[2px] border-none bg-primaryColor w-24' />
+
+            <hr className='mb-4 mt-2 h-[2px] border-none bg-primaryColor w-12' />
+          </div>
+
+          <div className="w-full pt-8 md:pt-12 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="w-full flex justify-center items-center overflow-hidden shadow-xl md:shadow-2xl">
+            <div className="flex flex-col gap-2 items-center justify-center w-full max-w-[450px] transition-transform duration-300 hover:scale-105 shadow-lg ">
+              <div>
+              <div className="relative w-full h-full bg-black bg-opacity-50">
+
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative">
+                          <Image src="/images/01.jpg" className="brightness-75" width={450} height={350} alt="imageojck" />
+                          <div className="absolute inset-0 bg-black opacity-20"></div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-3 bg-slate hover:bg-white" />
+                  <CarouselNext className="right-3 bg-slate  hover:bg-white" />
+                </Carousel>
+                <h1 className="absolute top-3 right-3 p-2 bg-customBlack rounded text-secondaryColor">Apartment</h1>
+                <h1 className="absolute bottom-3 left-3 p-2 text-primaryColor text-2xl">90 000 CFA</h1>
+                <p className="absolute bottom-3 right-3 p-2 text-white text-2xl"><StarIcon /></p>
+              </div>
+              <div className="flex w-full flex-col gap-2 items-center justify-center">
+                <div className="flex flex-col p-2 gap-1 w-full ">
+                  <h1 className="font-comfortaa text-customBlack text-2xl md:text-3xl">Title</h1>
+                  <div className="flex gap-2 items-center">
+                    <MapPin className="text-primaryColor w-4 h-4" />
+                  <p className="font-muli text-customGrey">Location</p>
+                  </div>
+                  
+                </div>
+                <div className="w-full">
+                  <ul className="flex bg-secondaryColor items-end p-4 justify-evenly w-full ">
+                    <li>
+                      <p>2</p>
+                      <p className="text-customGrey text-sm mt-2" >Bedroom</p>
+                    </li>
+                    <li>
+                      <p>0</p>
+                      <p className="text-customGrey text-sm mt-2">Bathroom</p>
+                    </li>
+                    <li>
+                      <p>4</p>
+                      <p className="text-customGrey text-sm mt-2">Storage</p>
+                    </li>
+
+                    <li>
+                      <p className="text-primaryColor text-sm">More+</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex p-4  gap-2 items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                    <p><MdAccountCircle size={28} className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">peter</p>
+                  </div>
+                  <div className="flex items-center gap-2" >
+                    <p><CalendarClock className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">2 Aug 2024</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+
+            <div className="w-full flex justify-center items-center overflow-hidden shadow-xl md:shadow-2xl">
+            <div className="flex flex-col gap-2 items-center justify-center w-full max-w-[450px] transition-transform duration-300 hover:scale-105 shadow-lg ">
+              <div>
+              <div className="relative w-full h-full bg-black bg-opacity-50">
+
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative">
+                          <Image src="/images/01.jpg" className="brightness-75" width={450} height={350} alt="imageojck" />
+                          <div className="absolute inset-0 bg-black opacity-20"></div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-3 bg-slate hover:bg-white" />
+                  <CarouselNext className="right-3 bg-slate  hover:bg-white" />
+                </Carousel>
+                <h1 className="absolute top-3 right-3 p-2 bg-customBlack rounded text-secondaryColor">Apartment</h1>
+                <h1 className="absolute bottom-3 left-3 p-2 text-primaryColor text-2xl">90 000 CFA</h1>
+                <p className="absolute bottom-3 right-3 p-2 text-white text-2xl"><StarIcon /></p>
+              </div>
+              <div className="flex w-full flex-col gap-2 items-center justify-center">
+                <div className="flex flex-col p-2 gap-1 w-full ">
+                  <h1 className="font-comfortaa text-customBlack text-2xl md:text-3xl">Title</h1>
+                  <div className="flex gap-2 items-center">
+                    <MapPin className="text-primaryColor w-4 h-4" />
+                  <p className="font-muli text-customGrey">Location</p>
+                  </div>
+                  
+                </div>
+                <div className="w-full">
+                  <ul className="flex bg-secondaryColor items-end p-4 justify-evenly w-full ">
+                    <li>
+                      <p>2</p>
+                      <p className="text-customGrey text-sm mt-2" >Bedroom</p>
+                    </li>
+                    <li>
+                      <p>0</p>
+                      <p className="text-customGrey text-sm mt-2">Bathroom</p>
+                    </li>
+                    <li>
+                      <p>4</p>
+                      <p className="text-customGrey text-sm mt-2">Storage</p>
+                    </li>
+
+                    <li>
+                      <p className="text-primaryColor text-sm">More+</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex p-4  gap-2 items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                    <p><MdAccountCircle size={28} className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">peter</p>
+                  </div>
+                  <div className="flex items-center gap-2" >
+                    <p><CalendarClock className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">2 Aug 2024</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+
+            <div className="w-full flex justify-center items-center overflow-hidden shadow-xl md:shadow-2xl">
+            <div className="flex flex-col gap-2 items-center justify-center w-full max-w-[450px] transition-transform duration-300 hover:scale-105  ">
+              <div>
+              <div className="relative w-full h-full bg-black bg-opacity-50">
+
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative">
+                          <Image src="/images/01.jpg" className="brightness-75" width={450} height={350} alt="imageojck" />
+                          <div className="absolute inset-0 bg-black opacity-20"></div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-3 bg-slate hover:bg-white" />
+                  <CarouselNext className="right-3 bg-slate  hover:bg-white" />
+                </Carousel>
+                <h1 className="absolute top-3 right-3 p-2 bg-customBlack rounded text-secondaryColor">Apartment</h1>
+                <h1 className="absolute bottom-3 left-3 p-2 text-primaryColor text-2xl">90 000 CFA</h1>
+                <p className="absolute bottom-3 right-3 p-2 text-white text-2xl"><StarIcon /></p>
+              </div>
+              <div className="flex w-full flex-col gap-2 items-center justify-center">
+                <div className="flex flex-col p-2 gap-1 w-full ">
+                  <h1 className="font-comfortaa text-customBlack text-2xl md:text-3xl">Title</h1>
+                  <div className="flex gap-2 items-center">
+                    <MapPin className="text-primaryColor w-4 h-4" />
+                  <p className="font-muli text-customGrey">Location</p>
+                  </div>
+                  
+                </div>
+                <div className="w-full">
+                  <ul className="flex bg-secondaryColor items-end p-4 justify-evenly w-full ">
+                    <li>
+                      <p>2</p>
+                      <p className="text-customGrey text-sm mt-2" >Bedroom</p>
+                    </li>
+                    <li>
+                      <p>0</p>
+                      <p className="text-customGrey text-sm mt-2">Bathroom</p>
+                    </li>
+                    <li>
+                      <p>4</p>
+                      <p className="text-customGrey text-sm mt-2">Storage</p>
+                    </li>
+
+                    <li>
+                      <p className="text-primaryColor text-sm">More+</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex p-4  gap-2 items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                    <p><MdAccountCircle size={28} className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">peter</p>
+                  </div>
+                  <div className="flex items-center gap-2" >
+                    <p><CalendarClock className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">2 Aug 2024</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+
+            <div className="w-full flex justify-center items-center overflow-hidden shadow-xl md:shadow-2xl">
+            <div className="flex flex-col gap-2 items-center justify-center w-full max-w-[450px] transition-transform duration-300 hover:scale-105 shadow-lg ">
+              <div>
+              <div className="relative w-full h-full bg-black bg-opacity-50">
+
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative">
+                          <Image src="/images/01.jpg" className="brightness-75" width={450} height={350} alt="imageojck" />
+                          <div className="absolute inset-0 bg-black opacity-20"></div>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-3 bg-slate hover:bg-white" />
+                  <CarouselNext className="right-3 bg-slate  hover:bg-white" />
+                </Carousel>
+                <h1 className="absolute top-3 right-3 p-2 bg-customBlack rounded text-secondaryColor">Apartment</h1>
+                <h1 className="absolute bottom-3 left-3 p-2 text-primaryColor text-2xl">90 000 CFA</h1>
+                <p className="absolute bottom-3 right-3 p-2 text-white text-2xl"><StarIcon /></p>
+              </div>
+              <div className="flex w-full flex-col gap-2 items-center justify-center">
+                <div className="flex flex-col p-2 gap-1 w-full ">
+                  <h1 className="font-comfortaa text-customBlack text-2xl md:text-3xl">Title</h1>
+                  <div className="flex gap-2 items-center">
+                    <MapPin className="text-primaryColor w-4 h-4" />
+                  <p className="font-muli text-customGrey">Location</p>
+                  </div>
+                  
+                </div>
+                <div className="w-full">
+                  <ul className="flex bg-secondaryColor items-end p-4 justify-evenly w-full ">
+                    <li>
+                      <p>2</p>
+                      <p className="text-customGrey text-sm mt-2" >Bedroom</p>
+                    </li>
+                    <li>
+                      <p>0</p>
+                      <p className="text-customGrey text-sm mt-2">Bathroom</p>
+                    </li>
+                    <li>
+                      <p>4</p>
+                      <p className="text-customGrey text-sm mt-2">Storage</p>
+                    </li>
+
+                    <li>
+                      <p className="text-primaryColor text-sm">More+</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex p-4  gap-2 items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                    <p><MdAccountCircle size={28} className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">peter</p>
+                  </div>
+                  <div className="flex items-center gap-2" >
+                    <p><CalendarClock className="text-primaryColor" /></p>
+                    <p className="text-customGrey text-sm">2 Aug 2024</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+
+          </div>
+
         </div>
-      </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      </main>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+      <Footer />
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </section>
   );
 }
