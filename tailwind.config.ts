@@ -19,6 +19,11 @@ const config = {
     },
     extend: {
       colors: {
+        primaryColor: '#17C788',
+        secondaryColor: '#F5F5F5',
+        customGreen: '#33FF57',
+        customBlack: '#0D1432',
+        customGrey: '#74777B',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -52,6 +57,10 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      fontFamily: {
+        comfortaa: ['Comfortaa', 'sans-serif'],
+        muli: ['Mulish', 'sans-serif']
       },
       borderRadius: {
         lg: "var(--radius)",
