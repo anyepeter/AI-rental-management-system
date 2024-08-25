@@ -23,7 +23,7 @@ const center = {
 function GooglesMap() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyAY_wThFJrTUXyi5KYsXTtWDzTBdPE3FQ8" // Replace with your actual API key
+    googleMapsApiKey: process.env.GOOGLE_API_KEY as string
   });
 
   const [open, setOpen] = useState(false);
