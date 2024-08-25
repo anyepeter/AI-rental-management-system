@@ -151,33 +151,78 @@ export default function page() {
 
 
                     </div>
-                    <div className='w-full lg:w-[35%]'>
+                    <div className='w-full md:flex-row flex flex-col gap-5 lg:flex-col justify-start items-start lg:w-[35%]'>
 
-                    <div className="max-w-md  mx-auto p-6 bg-white rounded-lg shadow-lg">
-                        <div className="flex flex-row gap-3  items-center  mb-6">
-        <img
-          className="w-20 h-20 bg-black rounded-full object-cover mb-4"
-          src="/profile.jpg" // Replace with your profile image path
-          alt="Profile"
-        />
-        <div className='flex flex-col gap-5'>
-        <h2 className="text-green-500 text-xl font-semibold">Josephine Pacheco</h2>
-        <p className="text-gray-500">+(81) 84 538 231</p>
-        </div>
+                        <div className="w-full  mx-auto p-6 bg-white rounded-lg shadow-lg">
+                            <h2 className='font-comfortaa text-2xl mb-6'>Property Owner</h2>
+                            <div className="flex flex-row gap-3  items-center  mb-6">
+                                <img
+                                    className="w-20 h-20 bg-black rounded-full object-cover mb-4"
+                                    src="/profile.jpg" // Replace with your profile image path
+                                    alt="Profile"
+                                />
+                                <div className='flex flex-col gap-3'>
+                                    <h2 className="text-green-500 text-xl font-semibold">Josephine Pacheco</h2>
+                                    <p className="text-gray-500">+(81) 84 538 231</p>
+                                </div>
 
-      </div>
+                            </div>
                         </div>
 
 
-                        <div>
-                        <GooglesDetails service={{
-                    position: {
-                        lat: 3.8480,
-                        lng: 11.5021
-                    }
-                  }} />
-                
+                        <div className='w-full mt-6'>
+                            <h2 className='font-comfortaa text-2xl mb-6'>Property location</h2>
+                            <div className="flex flex-col gap-4 md:gap-8 mt-10 w-full">
+                                <GooglesDetails service={{
+                                    position: {
+                                        lat: 3.8480,
+                                        lng: 11.5021
+                                    }
+                                }} />
+
+                            </div>
                         </div>
+
+
+                    </div>
+
+
+                </div>
+
+                <div className='mt-20 w-full max-w-[850px] self-start'>
+                    <div>
+                        <h2 className="font-comfortaa text-2xl mb-4">Give Your Review</h2>
+                        <hr className='mt-6 h-[2px] border-none bg-primaryColor w-24' />
+
+                        <hr className='mb-4 mt-2 h-[2px] border-none bg-primaryColor w-12' />
+                    </div>
+                    <div className='mt-10'>
+                        <form className="space-y-4 mt-6">
+
+                            <div>
+                                <textarea
+                                    placeholder="Comments"
+                                    rows={4}
+                                    className="w-full px-4 py-2 bg-secondaryColor border focus:outline-none focus:ring-2 focus:ring-green-500"
+                                />
+                            </div>
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="px-4 bg-primaryColor text-white py-2 hover:bg-green-600 transition-colors"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div className='mt-10 w-full max-w-[850px] self-start'>
+                    <h2 className="font-comfortaa text-customBlack text-2xl mb-4">User Review(0)</h2>
+
+                    <div>
+
                     </div>
                 </div>
 
