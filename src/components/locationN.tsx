@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { googleApiKey } from '@/lib/secret';
 
 const containerStyle = {
   width: '100%',
@@ -20,7 +21,7 @@ interface LocationNProps {
 function LocationN({ address, onMapClick }: LocationNProps) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyAY_wThFJrTUXyi5KYsXTtWDzTBdPE3FQ8",
+    googleMapsApiKey: googleApiKey,
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);

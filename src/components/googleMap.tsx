@@ -6,7 +6,7 @@ import { MdLocationPin, MdStar, MdStarBorder } from "react-icons/md";
 // import { useSelector } from 'react-redux';
 // import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
-import { XCircle } from 'lucide-react';
+import { googleApiKey } from '@/lib/secret';
 // import school from '../../assets/school.png';
 // import cutlery from '../../assets/cutlery.png';
 
@@ -23,7 +23,7 @@ const center = {
 function GooglesMap() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.GOOGLE_API_KEY as string
+    googleMapsApiKey: googleApiKey
   });
 
   const [open, setOpen] = useState(false);

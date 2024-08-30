@@ -1,4 +1,5 @@
 
+import { ACCESS_KEY_ID, BUCKET_NAME, BUCKET_REGION, SECRET_ACCESS_KEY } from '@/lib/secret';
 import AWS from 'aws-sdk';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
@@ -9,14 +10,14 @@ export const uploadToS3 = async (images: File[]): Promise<string[]> => {
   const uploadedUrls: string[] = [];
 
   const s3 = new AWS.S3({
-    accessKeyId: "AKIAU6GD2ADGEWNXOOU4",
-    secretAccessKey: "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",
-    region: "us-east-2",
+    accessKeyId: ACCESS_KEY_ID,
+    secretAccessKey: SECRET_ACCESS_KEY,
+    region: BUCKET_REGION,
   });
 
   for (const file of images) {
     const params = {
-      Bucket: "ai-rental-images",
+      Bucket: BUCKET_NAME,
       Key: `${Date.now()}_${file.name}`,
       Body: file,
       ContentType: file.type,
@@ -42,13 +43,13 @@ export const uploadVideoToS3 = async (video: File | null): Promise<string | null
   }
 
   const s3 = new AWS.S3({
-    accessKeyId: "AKIAU6GD2ADGEWNXOOU4",
-    secretAccessKey: "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",
-    region: "us-east-2",
+    accessKeyId: ACCESS_KEY_ID,
+    secretAccessKey: SECRET_ACCESS_KEY,
+    region: BUCKET_REGION,
   });
 
   const params = {
-    Bucket: "ai-rental-images",
+    Bucket: BUCKET_NAME,
     Key: `${Date.now()}_${video.name}`,
     Body: video,
     ContentType: video.type,

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { GoogleMap, InfoWindowF, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { googleApiKey } from '@/lib/secret';
 
 interface Marker {
   id: number;
@@ -36,7 +37,7 @@ function GooglesDetails({ service }: { service: ServiceProps }): JSX.Element {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyAY_wThFJrTUXyi5KYsXTtWDzTBdPE3FQ8"
+    googleMapsApiKey: googleApiKey
   });
 
 
