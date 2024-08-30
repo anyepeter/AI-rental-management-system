@@ -222,7 +222,38 @@ export default function page() {
                     <h2 className="font-comfortaa text-customBlack text-2xl mb-4">User Review(0)</h2>
 
                     <div>
+                    <div className="flex flex-col sm:flex-row bg-white p-6 rounded-lg shadow-md max-w-3xl mx-auto">
+      {/* Profile Picture */}
+      <div className="flex-shrink-0">
+        <img
+          src="/profile.jpg" // Replace with the profile image path
+          alt="User Profile"
+          className="w-16 h-16 rounded-full object-cover"
+        />
+      </div>
 
+      {/* Review Content */}
+      <div className="sm:ml-4 mt-4 sm:mt-0">
+        <div className="flex items-center justify-between">
+          {/* Name and Stars */}
+          <div>
+            <h3 className="font-semibold text-lg text-gray-800">Rebecca D. Nagy</h3>
+
+          </div>
+          {/* Date and Reply */}
+          <div className="text-right">
+            <p className="text-sm text-gray-500">27 February, 2018 at 3:27 pm</p>
+          </div>
+        </div>
+
+        {/* Review Text */}
+        <p className="mt-4 text-gray-500">
+          Fermentum mus porttitor tempor arcu posuere. Nibh consectetuer condimentum ultricies
+          pulvinar eget pede litora interdum magna aenean ullamcorper nisi dis. Viverra. Vulputate.
+          Quisque neque luctus quis rhoncus.
+        </p>
+      </div>
+    </div>
                     </div>
                 </div>
 
