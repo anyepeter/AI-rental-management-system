@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  name         String?
+  firstName    String?
+  lastName     String?
+  contact      String?
+  clerkUserId  String     @unique
+  properties   Property[]
+}
+model Category {
+  id         String     @id @default(cuid())
+  name       String
+  properties Property[]
+}
+
+model Hospital {
+  id         String   @id @default(cuid())
+  name       String
+  distance   Float
+  type       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model Market {
+  id         String   @id @default(cuid())
+  name       String
+  distance   Float
+  type       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model School {
+  id         String   @id @default(cuid())
+  name       String
+  distance   Float
+  type       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model Property {
+  id             String     @id @default(cuid())
+  title          String
+  price          Float?
+  description    String
+  bedrooms       Int?
+  bathrooms      Int?
+  kitchen        Int?
+  propertyNumber Int?
+  water          String
+  electricity    String
+  hasStorage     Boolean
+  address        String
+  lat            Float?
+  lng            Float?
+  gate           Boolean
+  gateman        Boolean
+  images         String[]
+  video          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  user           User       @relation(fields: [userId], references: [id])
+  userId         String
+  category       Category   @relation(fields: [categoryId], references: [id])
+  categoryId     String
+  hospitals      Hospital[]
+  markets        Market[]
+  schools        School[]
+}

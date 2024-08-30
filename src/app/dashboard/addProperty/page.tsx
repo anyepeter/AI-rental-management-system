@@ -29,6 +29,7 @@ import {
 import LocationN from '@/components/locationN';
 import { GrClosedCaption } from 'react-icons/gr';
 import { uploadToS3, uploadVideoToS3 } from '@/components/uploadImageS3';
+import { getAllCategories } from '@/actions/actions';
 
 interface IFormInput {
   title: string;
@@ -73,6 +74,7 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSecondSection, setShowSecondSection] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [clickedLocation, setClickedLocation] = useState<{ latitude: number | null, longitude: number | null }>({
     latitude: null,
     longitude: null,
@@ -81,7 +83,7 @@ export default function Page() {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState<'hospital' | 'school' | 'market'>('hospital');
   const { control, register, handleSubmit, watch, reset, setValue, formState: { errors, isValid }, } = useForm<IFormInput>({
-    mode: 'onChange', 
+    mode: 'onChange',
     defaultValues: {
       title: '',
       category: '',
@@ -110,8 +112,16 @@ export default function Page() {
     },
   });
 
+  useEffect(() => {
+    const fetchCategoriesAndSection = async () => {
+      setCategories(await getAllCategories());
 
-  
+    };
+    fetchCategoriesAndSection();
+  }, []);
+
+
+
 
   useEffect(() => {
     if (clickedLocation.latitude !== null && clickedLocation.longitude !== null) {
@@ -175,7 +185,7 @@ export default function Page() {
               />
             </div>
             <div>
-              <Label htmlFor={`${selectedCategory}.${index}.distance`}  className='text-customGrey'>Distance (km)</Label>
+              <Label htmlFor={`${selectedCategory}.${index}.distance`} className='text-customGrey'>Distance (km)</Label>
               <Controller
                 name={`${selectedCategory}.${index}.distance`}
                 control={control}
@@ -183,7 +193,7 @@ export default function Page() {
               />
             </div>
             <div>
-              <Label htmlFor={`${selectedCategory}.${index}.type`}  className='text-customGrey'>Type</Label>
+              <Label htmlFor={`${selectedCategory}.${index}.type`} className='text-customGrey'>Type</Label>
               <Controller
                 name={`${selectedCategory}.${index}.type`}
                 control={control}
@@ -191,8 +201,8 @@ export default function Page() {
               />
             </div>
             <Button className='bg-red-500 w-12' type='button' onClick={() => remove(index)}>
-            <X className='h-4 w-4' />
-          </Button>
+              <X className='h-4 w-4' />
+            </Button>
           </div>
 
         </div>
@@ -208,7 +218,7 @@ export default function Page() {
       let videoUrl: string | null = null;
 
       // Upload the video to S3 and get the URL
-    
+
       // Upload the images to S3 and get the URLs
       if (data.images && data.images.length > 0) {
         imageUrls = await uploadToS3(data.images);
@@ -217,10 +227,10 @@ export default function Page() {
       if (data.video) {
         videoUrl = await uploadVideoToS3(data.video);
       }
-  
+
       // Here you can save the `imageUrls` along with other form data to your database
       console.log('Form Data:', { ...data, imageUrls, videoUrl });
-  
+
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -305,7 +315,7 @@ export default function Page() {
             !showSecondSection && (
               <div className=' '>
                 <div>
-                  <Label htmlFor='title'>Property Title</Label>
+                  <Label htmlFor='title' className='text-customGrey'>Property Title</Label>
                   <Controller
                     name='title'
                     control={control}
@@ -313,7 +323,7 @@ export default function Page() {
                   />
                 </div>
                 <div className='mt-4'>
-                  <Label htmlFor='category'>Category</Label>
+                  <Label htmlFor='category' className='text-customGrey'>Category</Label>
                   <Controller
                     name='category'
                     control={control}
@@ -324,15 +334,13 @@ export default function Page() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                          <SelectItem value="apartment">
-                                apartment
-                              </SelectItem>
-                              <SelectItem value="studio">
-                                studio
-                              </SelectItem>
-                              <SelectItem value="room">
-                                single room
-                              </SelectItem>
+                            {categories.length > 0 ? (
+                              categories.map((category: { id: number, name: string }, index: number) => (
+                                <SelectItem key={index} value={category.id.toString()}>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</SelectItem>
+                              ))
+                            ) : (
+                              <SelectItem value="loading">Loading categories...</SelectItem>
+                            )}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -362,6 +370,7 @@ export default function Page() {
               </div>
 
               {/* number of rooms section */}
+              {watch('category') === 'cm0gm8l1g00003wrb4iyb03k2' && (
 
               <div className='flex w-full gap-1 md:gap-2 lg:gap-6'>
                 <div className='w-full'>
@@ -389,6 +398,7 @@ export default function Page() {
                   />
                 </div>
               </div>
+            )}
 
               <div className='flex w-full gap-1 md:gap-2 lg:gap-6'>
                 <div className=' w-full'>
@@ -411,15 +421,15 @@ export default function Page() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                          <SelectItem value="borehole">
-                                borehole
-                              </SelectItem>
-                              <SelectItem value="river">
-                                river
-                                </SelectItem>
-                                <SelectItem value="tank">
-                                  tank
-                                  </SelectItem>
+                            <SelectItem value="borehole">
+                              borehole
+                            </SelectItem>
+                            <SelectItem value="river">
+                              river
+                            </SelectItem>
+                            <SelectItem value="tank">
+                              tank
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -438,12 +448,12 @@ export default function Page() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                          <SelectItem value="prepaid">
-                                prepaid
-                              </SelectItem>
-                              <SelectItem value="postpaid">
-                                postpaid
-                                </SelectItem>
+                            <SelectItem value="prepaid">
+                              prepaid
+                            </SelectItem>
+                            <SelectItem value="postpaid">
+                              postpaid
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -480,79 +490,79 @@ export default function Page() {
               </div>
               {/* description section */}
               <div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button type="button" className="bg-primaryColor hover:bg-green-400">
-            Ask AI to write description
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Property Details</DialogTitle>
-          </DialogHeader>
-          <div>
-            <p className="text-customGrey text-sm">Please provide the following Information to the AI</p>
-          </div>
-          <div className="grid gap-4 py-4">
-            <div className="">
-              <Label htmlFor="color" className="text-right text-customGrey text-xs">
-                Color of the property
-              </Label>
-              <Controller
-                name="color"
-                control={control}
-                rules={{ required: 'Color is required' }}
-                render={({ field }) => (
-                  <>
-                    <Input id="color" className="col-span-3 mt-3" {...field} />
-                    {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color.message}</p>}
-                  </>
-                )}
-              />
-            </div>
-            <div className="">
-              <Label htmlFor="mainCarrefour" className="text-right text-customGrey text-xs">
-                Main Carrefour from the property
-              </Label>
-              <Controller
-                name="mainCarrefour"
-                control={control}
-                rules={{ required: 'Main Carrefour is required' }}
-                render={({ field }) => (
-                  <>
-                    <Input id="mainCarrefour" className="col-span-3 mt-3" {...field} />
-                    {errors.mainCarrefour && <p className="text-red-500 text-xs mt-1">{errors.mainCarrefour.message}</p>}
-                  </>
-                )}
-              />
-            </div>
-            <div className="items-center gap-4">
-              <Label htmlFor="distanceFromRoad" className="text-right text-customGrey text-xs">
-                Distance from Road main to the property
-              </Label>
-              <Controller
-                name="distanceFromRoad"
-                control={control}
-                rules={{ required: 'Distance from the road is required', min: 0 }}
-                render={({ field }) => (
-                  <>
-                    <Input id="distanceFromRoad" type="number" className="col-span-3 mt-3" {...field} />
-                    {errors.distanceFromRoad && (
-                      <p className="text-red-500 text-xs mt-1">{errors.distanceFromRoad.message}</p>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" className="bg-primaryColor text-white" onClick={handleSubmit(onSubmitt)} disabled={!isValid}>
-              Submit
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button type="button" className="bg-primaryColor hover:bg-green-400">
+                      Ask AI to write description
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Property Details</DialogTitle>
+                    </DialogHeader>
+                    <div>
+                      <p className="text-customGrey text-sm">Please provide the following Information to the AI</p>
+                    </div>
+                    <div className="grid gap-4 py-4">
+                      <div className="">
+                        <Label htmlFor="color" className="text-right text-customGrey text-xs">
+                          Color of the property
+                        </Label>
+                        <Controller
+                          name="color"
+                          control={control}
+                          rules={{ required: 'Color is required' }}
+                          render={({ field }) => (
+                            <>
+                              <Input id="color" className="col-span-3 mt-3" {...field} />
+                              {errors.color && <p className="text-red-500 text-xs mt-1">{errors.color.message}</p>}
+                            </>
+                          )}
+                        />
+                      </div>
+                      <div className="">
+                        <Label htmlFor="mainCarrefour" className="text-right text-customGrey text-xs">
+                          Main Carrefour from the property
+                        </Label>
+                        <Controller
+                          name="mainCarrefour"
+                          control={control}
+                          rules={{ required: 'Main Carrefour is required' }}
+                          render={({ field }) => (
+                            <>
+                              <Input id="mainCarrefour" className="col-span-3 mt-3" {...field} />
+                              {errors.mainCarrefour && <p className="text-red-500 text-xs mt-1">{errors.mainCarrefour.message}</p>}
+                            </>
+                          )}
+                        />
+                      </div>
+                      <div className="items-center gap-4">
+                        <Label htmlFor="distanceFromRoad" className="text-right text-customGrey text-xs">
+                          Distance from Road main to the property
+                        </Label>
+                        <Controller
+                          name="distanceFromRoad"
+                          control={control}
+                          rules={{ required: 'Distance from the road is required', min: 0 }}
+                          render={({ field }) => (
+                            <>
+                              <Input id="distanceFromRoad" type="number" className="col-span-3 mt-3" {...field} />
+                              {errors.distanceFromRoad && (
+                                <p className="text-red-500 text-xs mt-1">{errors.distanceFromRoad.message}</p>
+                              )}
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button type="submit" className="bg-primaryColor text-white" onClick={handleSubmit(onSubmitt)} disabled={!isValid}>
+                        Submit
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
 
 
               <div className='space-y-6'>
@@ -636,88 +646,87 @@ export default function Page() {
               <div className='space-y- pt-10'>
                 <h2 className='text-xl font-semibold mb-5'>Property Photos And Video</h2>
                 <Controller
-  name="images" 
-  control={control}
-  render={({ field }) => (
-    <div className="container">
-      <input
-        className="custom-file-input"
-        type="file"
-        onChange={(e) => {
-          field.onChange(e.target.files);
-          handleImageChange(e); 
-        }}
-        multiple
-        
-      />
-        <div className="preview-container bg-secondaryColor">
-    {selectedImages?.map((image, index) => (
-      <div key={index} className="image-preview">
-        <img src={image} className='imageFile' alt={`Preview ${index + 1}`} />
-        <button className='preview-remove' onClick={() => handleRemoveImage(index)}>
-          <CircleX style={{ fontSize: '15' }}/>
-        </button>
-      </div>
-    ))}
-  </div>
-      <span id='imageError' style={{color: 'red', fontSize: 13, display: 'none'}}>Images needed!</span>
-    </div>
-  )}
-/>
-              </div>
-            
-      <p className='text-xl font-semibold '>Video</p>
+                  name="images"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="container">
+                      <input
+                        className="custom-file-input"
+                        type="file"
+                        onChange={(e) => {
+                          field.onChange(e.target.files);
+                          handleImageChange(e);
+                        }}
+                        multiple
 
-      <div className="items-center gap-4">
-        <Label className="text-right text-customGrey">Add a video</Label>
-        <Controller
-          name="video"
-          control={control}
-          render={({ field }) => (
-            <input
-              type="file"
-              accept="video/*"
-              className="col-span-3 mt-3"
-              onChange={(e) => {
-                const file = e.target.files ? e.target.files[0] : null;
-                field.onChange(file);
-              }}
-            />
-          )}
-        />
-      </div>
+                      />
+                      <div className="preview-container bg-secondaryColor">
+                        {selectedImages?.map((image, index) => (
+                          <div key={index} className="image-preview">
+                            <img src={image} className='imageFile' alt={`Preview ${index + 1}`} />
+                            <button className='preview-remove' onClick={() => handleRemoveImage(index)}>
+                              <CircleX style={{ fontSize: '15' }} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <span id='imageError' style={{ color: 'red', fontSize: 13, display: 'none' }}>Images needed!</span>
+                    </div>
+                  )}
+                />
+              </div>
+
+              <p className='text-xl font-semibold '>Video</p>
+
+              <div className="items-center gap-4">
+                <Label className="text-right text-customGrey">Add a video</Label>
+                <Controller
+                  name="video"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      type="file"
+                      accept="video/*"
+                      className="col-span-3 mt-3"
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        field.onChange(file);
+                      }}
+                    />
+                  )}
+                />
+              </div>
 
               <div className='space-y-6 pt-10 pb-10'>
                 <h2 className='text-xl font-semibold'>Add nearby places</h2>
                 <hr className='w-full mt-6' />
                 <div className='flex w-full pt-5 bg-secondaryColor'>
-        {['hospital','school', 'market'].map((category) => (
-          <button
-            key={category}
-            type='button'
-            className={`px-4 py-4 ${
-              selectedCategory === category
-                ? 'bg-primaryColor text-white'
-                : 'bg-gray-100 text-gray-700'
-            } rounded`}
-            onClick={() => setSelectedCategory(category as 'hospital' | 'school' | 'market')}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
-          </button>
-        ))}
-      </div>
+                  {['hospital', 'school', 'market'].map((category) => (
+                    <button
+                      key={category}
+                      type='button'
+                      className={`px-4 py-4 ${selectedCategory === category
+                          ? 'bg-primaryColor text-white'
+                          : 'bg-gray-100 text-gray-700'
+                        } rounded`}
+                      onClick={() => setSelectedCategory(category as 'hospital' | 'school' | 'market')}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </button>
+                  ))}
+                </div>
 
-      {/* Dynamic Field Rendering */}
-      <div className='mt-5'>
-        {selectedCategory === 'hospital' && renderFields(hospitalFields.fields, hospitalFields.remove)}
-        {selectedCategory === 'school' && renderFields(schoolFields.fields, schoolFields.remove)}
-        {selectedCategory === 'market' && renderFields(restaurantFields.fields, restaurantFields.remove)}
-      </div>
+                {/* Dynamic Field Rendering */}
+                <div className='mt-5'>
+                  {selectedCategory === 'hospital' && renderFields(hospitalFields.fields, hospitalFields.remove)}
+                  {selectedCategory === 'school' && renderFields(schoolFields.fields, schoolFields.remove)}
+                  {selectedCategory === 'market' && renderFields(restaurantFields.fields, restaurantFields.remove)}
+                </div>
 
-      {/* Add Place Button */}
-      <Button type='button' onClick={handleAddPlace} className='bg-primaryColor flex items-center justify-center hover:bg-green-500'>
-        <Plus className=' h-4 w-4' />
-      </Button>
+                {/* Add Place Button */}
+                <Button type='button' onClick={handleAddPlace} className='bg-primaryColor flex items-center justify-center hover:bg-green-500'>
+                  <Plus className=' h-4 w-4' />
+                </Button>
               </div>
               <Button type='submit' className='m-auto p-5 bg-primaryColor flex items-center justify-center hover:bg-green-500'>
                 {isSubmitting ? <Loader2 className='animate-spin' /> : 'Submit Property'}
