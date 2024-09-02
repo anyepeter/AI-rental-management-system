@@ -29,11 +29,12 @@ import {
 import LocationN from '@/components/locationN';
 import { GrClosedCaption } from 'react-icons/gr';
 import { uploadToS3, uploadVideoToS3 } from '@/components/uploadImageS3';
-import { getAllCategories } from '@/actions/actions';
+import { aiDescription, createProperty, getAllCategories, getFirstUser } from '@/actions/actions';
 
 interface IFormInput {
   title: string;
-  category: string;
+  userId: string | null;
+  categoryId: string;
   price: null | number;
   description: string;
   bedrooms: null | number;
@@ -75,6 +76,7 @@ export default function Page() {
   const [showSecondSection, setShowSecondSection] = useState(false);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState(null);
   const [clickedLocation, setClickedLocation] = useState<{ latitude: number | null, longitude: number | null }>({
     latitude: null,
     longitude: null,
@@ -86,7 +88,8 @@ export default function Page() {
     mode: 'onChange',
     defaultValues: {
       title: '',
-      category: '',
+      categoryId: '',
+      userId: '',
       price: null,
       description: '',
       bedrooms: null,
@@ -112,16 +115,22 @@ export default function Page() {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false); // Controls the dialog open state
+
+
   useEffect(() => {
     const fetchCategoriesAndSection = async () => {
       setCategories(await getAllCategories());
+      setUser(await getFirstUser());
+      setValue("userId", user?.id)    
 
     };
     fetchCategoriesAndSection();
-  }, []);
+  }, [user?.id]);
 
 
-
+console.log(user?.id)
 
   useEffect(() => {
     if (clickedLocation.latitude !== null && clickedLocation.longitude !== null) {
@@ -146,11 +155,38 @@ export default function Page() {
     name: 'market',
   });
 
-  const onSubmitt = (data: IFormInput) => {
-    console.log('Form Data:', data);
-    // Perform your form submission logic here
-  };
+  const onSubmitt = async (data: IFormInput) => {
+    const { title, color, mainCarrefour, distanceFromRoad } = data;
+  
+    const newProperty = {
+      title,
+      color,
+      mainCarrefour,
+      distanceFromRoad,
+    };
+  
+    setLoading(true); // Start loading
+  
+    try {
+      const aiResult = await aiDescription(newProperty); // Get the AI-generated description
+  
+      const parsedData = {
+        result: JSON.parse(aiResult.result)
+      };
 
+      setValue('description', parsedData.result.description); 
+  
+      setIsDialogOpen(false);
+      setValue('color', '');
+      setValue('mainCarrefour', '');
+      setValue('distanceFromRoad', null);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
 
   const handleAddPlace = () => {
@@ -211,8 +247,8 @@ export default function Page() {
   );
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    // setIsSubmitting(true);
-    console.log(data);
+    setIsSubmitting(true);
+   
     try {
       let imageUrls: string[] = [];
       let videoUrl: string | null = null;
@@ -228,12 +264,45 @@ export default function Page() {
         videoUrl = await uploadVideoToS3(data.video);
       }
 
-      // Here you can save the `imageUrls` along with other form data to your database
-      console.log('Form Data:', { ...data, imageUrls, videoUrl });
+      const formDat = {
+        ...data,
+        lat: parseFloat(data.lat?.toString() ?? '0'),
+        lng: parseFloat(data.lng?.toString() ?? '0'),
+        price: parseFloat(data.price?.toString() ?? '0'),
+        bedrooms: parseInt(data.bedrooms?.toString() ?? '0'),
+        bathrooms: parseInt(data.bathrooms?.toString() ?? '0'),
+        kitchen: parseInt(data.kitchen?.toString() ?? '0'),
+        propertyNumber: parseInt(data.propertyNumber?.toString() ?? '0'),
+        images: imageUrls,
+        video: videoUrl,
+        hospital: data.hospital.map((hospital) => ({
+          name: hospital.name,
+          distance: parseFloat(hospital.distance.toString()),
+          type: hospital.type,
+        })),
+        school: data.school.map((school) => ({
+          name: school.name,
+          distance: parseFloat(school.distance.toString()),
+          type: school.type,
+        })),
+        market: data.market.map((market) => ({
+          name: market.name,
+          distance: parseFloat(market.distance.toString()),
+          type: market.type,
+        })),
+      };
+
+      await createProperty(formDat);
+      toast.success("The site was created successfully.")
+      reset();
+      window.location.reload();
 
     } catch (error) {
       console.error('Error submitting form:', error);
-    }
+      toast.error("An error occurred while creating the site.")
+    } finally {
+      setIsSubmitting(false);
+        }
 
     // try {
     //   const siteImages = await uploadImagesAndGetUrls(data.images, 'tourism-images');
@@ -265,7 +334,7 @@ export default function Page() {
   };
 
   const handleContinue = () => {
-    if (watch('title') && watch('category')) {
+    if (watch('title') && watch('categoryId')) {
       setShowSecondSection(true);
     } else {
       toast.error('Please fill in all fields before continuing.');
@@ -323,9 +392,9 @@ export default function Page() {
                   />
                 </div>
                 <div className='mt-4'>
-                  <Label htmlFor='category' className='text-customGrey'>Category</Label>
+                  <Label htmlFor='categoryId' className='text-customGrey'>Category</Label>
                   <Controller
-                    name='category'
+                    name='categoryId'
                     control={control}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} value={field.value}>
@@ -333,7 +402,7 @@ export default function Page() {
                           <SelectValue placeholder='Select a category' />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectGroup>
+                        <SelectGroup>
                             {categories.length > 0 ? (
                               categories.map((category: { id: number, name: string }, index: number) => (
                                 <SelectItem key={index} value={category.id.toString()}>{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</SelectItem>
@@ -370,7 +439,7 @@ export default function Page() {
               </div>
 
               {/* number of rooms section */}
-              {watch('category') === 'cm0gm8l1g00003wrb4iyb03k2' && (
+              {watch('categoryId') === 'cm0gm8l1g00003wrb4iyb03k2' && (
 
               <div className='flex w-full gap-1 md:gap-2 lg:gap-6'>
                 <div className='w-full'>
@@ -490,7 +559,7 @@ export default function Page() {
               </div>
               {/* description section */}
               <div>
-                <Dialog>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
                     <Button type="button" className="bg-primaryColor hover:bg-green-400">
                       Ask AI to write description
@@ -556,9 +625,10 @@ export default function Page() {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button type="submit" className="bg-primaryColor text-white" onClick={handleSubmit(onSubmitt)} disabled={!isValid}>
-                        Submit
-                      </Button>
+                    <Button type="submit" className="bg-primaryColor text-white" onClick={handleSubmit(onSubmitt)} disabled={!isValid}>
+            {loading ? 'Submitting...' : 'Submit'}
+          </Button>
+
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -729,7 +799,14 @@ export default function Page() {
                 </Button>
               </div>
               <Button type='submit' className='m-auto p-5 bg-primaryColor flex items-center justify-center hover:bg-green-500'>
-                {isSubmitting ? <Loader2 className='animate-spin' /> : 'Submit Property'}
+                {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Please wait
+                                </>
+                            ):  (
+                              'Submit Property'
+                          )}
               </Button>
             </>
           )}

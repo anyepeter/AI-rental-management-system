@@ -4,6 +4,7 @@ import Head from "next/head";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "react-hot-toast";
+import { Providers } from "./globalRedux/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,19 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
-<Head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Mulish:wght@200;300;400;500;600;700;800;900;1000&display=swap" rel="stylesheet"></link>
-    </Head>
-      <ClerkProvider>
       <body className={inter.className}>
-      <Toaster position="top-right" />
+        <Providers>
+        <Toaster position="top-right" />
         {children}
-        
+        </Providers>
         </body>
-        </ClerkProvider>
     </html>
+    </ClerkProvider>
   );
 }

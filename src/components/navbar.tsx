@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
-// import { useDispatch, useSelector } from'react-redux'
-// import { getAllSites, getUser } from '@/actions/actions'
-// import { addUser, increment } from '../../app/globalRedux/site/siteSlice'
+import { getAllProperties } from '@/actions/actions'
+import { useDispatch, useSelector } from'react-redux'
+import { fetchAllProperty } from '@/app/globalRedux/property/propertySlice'
 
 
 export default () => {
@@ -15,7 +15,7 @@ export default () => {
     const router = useRouter()
     const [state, setState] = useState(false)
     const navRef = useRef<HTMLElement>(null)
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
     const { user } = useUser()
 
     const userId = user?.id; // or user?.email or user?.clerkUserId based on your setup
@@ -47,18 +47,18 @@ export default () => {
     //   fetchUser();
     // }, [userId, dispatch]);
 
-    // useEffect(() => {
-    //     const fetchSites = async () => {
-    //       try {
-    //         const sitesData = await getAllSites()
-    //         dispatch(increment(sitesData))
-    //       } catch (error) {
-    //         console.error('Error fetching sites:', error)
-    //       }
-    //     }
+    useEffect(() => {
+        const fetchSites = async () => {
+          try {
+            const sitesData = await getAllProperties()
+            dispatch(fetchAllProperty(sitesData))
+          } catch (error) {
+            console.error('Error fetching sites:', error)
+          }
+        }
       
-    //     fetchSites()
-    //   }, [dispatch])
+        fetchSites()
+      }, [dispatch])
 
 
 

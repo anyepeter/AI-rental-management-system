@@ -1,7 +1,7 @@
 "use client"
 import { useState, useRef } from 'react';
 
-const VideoPlayer: React.FC = () => {
+const VideoPlayer: React.FC = ({image, video}: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -13,17 +13,17 @@ const VideoPlayer: React.FC = () => {
   const closeModal = () => {
     setIsOpen(false);
     videoRef.current?.pause();
-    videoRef.current!.currentTime = 0; // Reset video to start when closing
+    videoRef.current!.currentTime = 0; 
   };
 
   return (
     <div className="flex flex-col mt-5">
-      <h2 className="font-comfortaa text-2xl mb-4">Property Video</h2>
+      <h2 className="font-comfortaa text-xl mb-4">Property Video</h2>
 
       {/* Video Preview Section */}
       <div className="relative mt-5">
         <img
-          src="/images/01.jpg" // Replace with your thumbnail image
+          src={image}
           alt="Video Thumbnail"
           className="w-full h-auto"
         />
@@ -50,8 +50,8 @@ const VideoPlayer: React.FC = () => {
             <video
               ref={videoRef}
               controls
-              className="w-full  h-auto"
-              src="/sample-video.mp4"
+              className="w-full  h-[500px]"
+              src={video}
             />
           </div>
         </div>
