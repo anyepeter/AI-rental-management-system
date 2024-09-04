@@ -25,13 +25,13 @@ const VideoPlayer: React.FC = ({image, video}: any) => {
         <img
           src={image}
           alt="Video Thumbnail"
-          className="w-full h-auto"
+          className="w-full h-auto  brightness-50  cursor-pointer"
         />
         <button
           className="absolute inset-0 flex items-center justify-center"
           onClick={openModal}
         >
-          <span className="bg-primaryColor text-white p-2 rounded-full text-4xl">
+          <span className="bg-primaryColor animate-pulse cursor-pointer text-white p-2 rounded-full text-4xl">
             &#9658;
           </span>
         </button>

@@ -15,6 +15,7 @@ import {
 import Image from 'next/image';
 import { X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const containerStyle = {
   width: '100%',
@@ -34,15 +35,11 @@ function GooglesMap({ items }: any) {
 
   const [open, setOpen] = useState(false);
   const { user } = useUser();
-//   const navigate = useNavigate();
+  const navigate = useRouter();
 
-//   const handleTitleClick = (service: any) => {
-//     if (user) {
-//       navigate(`/${service.title}`, { state: { service } });
-//     } else {
-//       setOpen(true);
-//     }
-//   };
+  const handleTitleClick = (service: any) => {
+    navigate.push(`/property/${service.id}`)
+  };
 
 console.log(items)
   const handleClose = () => {
@@ -75,8 +72,8 @@ console.log(items)
           onClick={() => handleMarkerClick(marker)}
           options={{
             icon: {
-              url: (marker.category.name === "apartment") ? apartment : apartment,
-              scaledSize: new window.google.maps.Size(30, 30),
+              url: (marker.category.name === "apartment") ? '/images/apart.png' : (marker.category.name === "studio") ? '/images/studio.png' : '/images/room.png',
+              scaledSize: new window.google.maps.Size(40, 70),
               origin: new window.google.maps.Point(0, 0),
               anchor: new window.google.maps.Point(25, 50)
             }
@@ -94,10 +91,10 @@ console.log(items)
                     <CarouselContent>
                       {selectedMarker.images.map((image: any, index: number) => (
                         <CarouselItem key={index}>
-                          <div className="relative">
-                            <Image src={image} className="brightness-75" width={250} height={200} alt="imageojck" />
+                          <div className="relative w-full max-h-200px]">
+                            <img src={image} className="brightness-75 w-full h-[200px]"  alt="imageojck" />
                             <div className="absolute inset-0 bg-black opacity-20"></div>
-                          </div>
+                          </div> 
                         </CarouselItem>
                       ))}
                     </CarouselContent>
@@ -106,7 +103,7 @@ console.log(items)
                   </Carousel>
                   <div className='flex row w-full justify-between items-start' >
                   <div className='flex flex-col gap-1 mb-1'>
-              <h1 onClick={() => handleTitleClick(selectedMarker)} className='pt-1 pl-1 text-sm font-[900] font-comfortaa hover:text-primaryColor cursor-pointer hover:transition-colors hover:duration-300 transition-colors duration-300 truncates-location'> {selectedMarker.title}</h1>
+              <h1 onClick={() => handleTitleClick(selectedMarker)} className='pt-1 pl-1 text-sm font-[900] font-comfortaa hover:text-primaryColor cursor-pointer hover:transition-colors hover:duration-300 transition-colors duration-300 truncates-location'> {selectedMarker.title.charAt(0).toUpperCase() + selectedMarker.title.slice(1)}</h1>
               <p className='pl-1 text-xs flex items-center'><MdLocationPin style={{ fontSize: '1rem' }} className='text-primaryColor' /><span className='truncates-title'>{selectedMarker.address}</span></p>
             </div>
             <p className='text-base text-customBlack'>{selectedMarker.price} CFA</p>
@@ -127,8 +124,8 @@ console.log(items)
 
     </GoogleMap>
   ) : (
-    <div className='w-full h-[600px]'>
-
+    <div className='w-full justify-center flex items-center h-full'>
+      <p className='text-customGrey text-sm'>Map loading...</p>
     </div>
   );
 }

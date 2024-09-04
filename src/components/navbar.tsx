@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
-import { getAllProperties } from '@/actions/actions'
+import { getAllProperties, getUserById } from '@/actions/actions'
 import { useDispatch, useSelector } from'react-redux'
-import { fetchAllProperty } from '@/app/globalRedux/property/propertySlice'
+import { addUser, fetchAllProperty } from '@/app/globalRedux/property/propertySlice'
 
 
 export default () => {
@@ -29,23 +29,23 @@ export default () => {
       { title: "Contact", path: "/contact" },
     ];
   
-    // useEffect(() => {
-    //   const fetchUser = async () => {
-    //     if (!userId) {
-    //       console.error('User ID is missing');
-    //       return;
-    //     }
+    useEffect(() => {
+      const fetchUser = async () => {
+        if (!userId) {
+          console.error('User ID is missing');
+          return;
+        }
   
-    //     try {
-    //       const userData = await getUser(userId); // Assuming getUser expects an object with userId
-    //       dispatch(addUser(userData));
-    //     } catch (error) {
-    //       console.error('Error fetching user:', error);
-    //     }
-    //   };
+        try {
+          const userData = await getUserById(userId); // Assuming getUser expects an object with userId
+          dispatch(addUser(userData));
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      };
   
-    //   fetchUser();
-    // }, [userId, dispatch]);
+      fetchUser();
+    }, [userId, dispatch]);
 
     useEffect(() => {
         const fetchSites = async () => {

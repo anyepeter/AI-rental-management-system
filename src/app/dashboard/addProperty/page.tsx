@@ -30,6 +30,7 @@ import LocationN from '@/components/locationN';
 import { GrClosedCaption } from 'react-icons/gr';
 import { uploadToS3, uploadVideoToS3 } from '@/components/uploadImageS3';
 import { aiDescription, createProperty, getAllCategories, getFirstUser } from '@/actions/actions';
+import { useSelector } from 'react-redux';
 
 interface IFormInput {
   title: string;
@@ -118,19 +119,16 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Controls the dialog open state
 
-
+  const users = useSelector((state: any) => state.property.user);
   useEffect(() => {
     const fetchCategoriesAndSection = async () => {
       setCategories(await getAllCategories());
-      setUser(await getFirstUser());
-      setValue("userId", user?.id)    
+      setUser(users);
+      setValue("userId", users?.id)    
 
     };
     fetchCategoriesAndSection();
-  }, [user?.id]);
-
-
-console.log(user?.id)
+  }, [users]);
 
   useEffect(() => {
     if (clickedLocation.latitude !== null && clickedLocation.longitude !== null) {
@@ -303,34 +301,6 @@ console.log(user?.id)
     } finally {
       setIsSubmitting(false);
         }
-
-    // try {
-    //   const siteImages = await uploadImagesAndGetUrls(data.images, 'tourism-images');
-    //   const hotels = await Promise.all(
-    //     data.hotel.map(async (hotel) => ({
-    //       ...hotel,
-    //       hotel_images: await uploadImagesAndGetUrls(hotel.hotel_images, 'hotel-images'),
-    //     }))
-    //   );
-
-    //   const formData = {
-    //     ...data,
-    //     lat: parseFloat(data.lat.toString()),
-    //     lng: parseFloat(data.lng.toString()),
-    //     images: siteImages,
-    //     hotel: hotels,
-    //   };
-
-    //   await createSiteWithHotels(formData);
-    //   toast.success('Site created successfully!');
-    //   reset();
-    //   setShowSecondSection(false);
-    //   setShowAdditionalFields(false);
-    // } catch (error) {
-    //   toast.error('An error occurred while creating the site.');
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
   };
 
   const handleContinue = () => {

@@ -4,10 +4,11 @@ const initialState = {
     properties: [],
     user: {},
     filterResults: [],
+    aiProperties: [],
   };
   
   export const counterSlice = createSlice({
-    name: "tourism",
+    name: "rental",
     initialState,
     reducers: {
       fetchAllProperty: (state, action) => {
@@ -18,8 +19,11 @@ const initialState = {
       },
       filterProperties: (state, action) => {
         state.filterResults = action.payload;
-    }}
-  })
+    },
+  fetchAIProperty: (state, action) => {
+        state.aiProperties = action.payload;
+    }
+  }})
 
-export const { fetchAllProperty, addUser, filterProperties } = counterSlice.actions;
+export const { fetchAllProperty, addUser, filterProperties, fetchAIProperty } = counterSlice.actions;
 export default counterSlice.reducer;

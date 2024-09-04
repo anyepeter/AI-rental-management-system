@@ -19,6 +19,8 @@ import VideoPlayer from '@/components/videoPlayer'
 import GooglesDetails from '@/components/detailPlace'
 import { useParams } from 'next/navigation'
 import { useSelector } from 'react-redux'
+import { useUser } from '@clerk/nextjs'
+import Link from 'next/link'
 
 const images = [
     "/images/01.jpg",
@@ -34,11 +36,14 @@ export default function page() {
     )
     const [selectedImage, setSelectedImage] = useState<string>(images[0]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showLoginPopup, setShowLoginPopup] = useState(false); // For showing login modal
 
 
     const handleImageClick = (image: string) => {
         setSelectedImage(image);
     };
+
+    const { user } = useUser()
 
     const params = useParams()
 
@@ -52,7 +57,15 @@ export default function page() {
         }
     }, [property]);
 
-    console.log(property)
+    const handleWhatsAppChat = () => {
+        if (!user) {
+          setShowLoginPopup(true); 
+        } else {
+          const phoneNumber = parseInt(property.user.phone.slice(1));
+          window.open(`https://wa.me/${phoneNumber}`, '_blank'); 
+        }
+      };
+    
 
     return (
         <section className="flex w-full flex-col min-h-screen items-center justify-between pt-26">
@@ -99,7 +112,7 @@ export default function page() {
                         </div>
                     </div>
     
-                    <div className='w-full h-[600px] hidden lg:flex flex-row items-center justify-between gap-4 mt-10'>
+                    <div className='w-full h-[800px] hidden lg:flex flex-row items-center justify-between gap-4 mt-10'>
                         <Slider images={property.images} />
                     </div>
     
@@ -202,13 +215,18 @@ export default function page() {
                                 <div className="flex flex-row gap-3   items-start  mb-6">
                                     <img
                                         className="w-10 h-10 bg-black rounded-full object-cover mb-4"
-                                        src="/profile.jpg" // Replace with your profile image path
+                                        src={property.user.image} // Replace with your profile image path
                                         alt="Profile"
                                     />
                                     <div className='flex flex-col gap-1'>
-                                        <h2 className="text-green-500 text-base font-semibold">{property.user.firstName.charAt(0).toUpperCase()+ property.user.firstName.slice(1)}  {property.user.lastName.charAt(0).toUpperCase() + property.user.lastName.slice(1)}
+                                        <h2 className="text-customBlack text-base font-semibold">{property.user.firstName.charAt(0).toUpperCase()+ property.user.firstName.slice(1)}  {property.user.lastName.charAt(0).toUpperCase() + property.user.lastName.slice(1)}
                                         </h2>
-                                        <p className="text-gray-500 text-sm">+(81) 84 538 231</p>
+                                        <button
+                  onClick={handleWhatsAppChat}
+                  className="text-green-500 text-sm hover:underline"
+                >
+                  Chat via WhatsApp
+                </button>
                                     </div>
     
                                 </div>
@@ -305,6 +323,28 @@ export default function page() {
                 </main>
                 )
             }
+
+{showLoginPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-8">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Please Login/Sign Up</h2>
+            <p className="mb-4 text-customGrey">You need to login or register to chat with the property owner via WhatsApp.</p>
+            <div className='flex w-full justify-between'>
+            <Link href="/sign-in">
+              <button className="bg-primaryColor text-white px-4 py-2 rounded hover:bg-green-600">
+                Login/Signup
+              </button>
+            </Link>
+            <button
+              onClick={() => setShowLoginPopup(false)}
+              className="mt-4 text-gray-500 hover:underline"
+            >
+              Close
+            </button>
+            </div>
+          </div>
+        </div>
+      )}
 
             <Footer />
 

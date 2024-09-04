@@ -17,27 +17,32 @@ import { useParams } from 'next/navigation'
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import AiFeature from "@/components/ai";
+import { useUser } from "@clerk/nextjs";
 
 export default function Page() {
   const params = useParams()
   const {category} = params
   const { properties } = useSelector((state: any) => state.property);
-const [isLoading, setIsLoading] = useState(true)
+  const { user } = useUser()
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedUser, setSelectedUser] = useState(null)
 
-const apartmentProperties = properties.filter((property: any) => property.category.name === category);
+  const apartmentProperties = properties.filter((property: any) => property.category.name === category);
 
-useEffect(() => {
-  if (properties.length > 0) {
-    setIsLoading(false)
+  useEffect(() => {
+    if (apartmentProperties.length > 0) {
+      setIsLoading(false)
+    }
+  }, [apartmentProperties])
+
+  const handleUserClick = (user: any) => {
+    setSelectedUser(user)
   }
-}, [properties])
-
-  console.log(category)
   return (
     <section className="flex w-full flex-col   items-center justify-center pt-26">
     <Navbar />
-    <div className="flex flex-col items-center w-full h-[80vh] bg-red-400 justify-center">
+    <div className="flex flex-col items-center w-full mt-24  w-full h-[70vh] justify-center">
       <GoogleMap  items={apartmentProperties} />
     </div>
     <div className="w-full flex justify-center p-2 pt-6 pb-8 md:p-4 md:pt-8 md:pb-12 items-center bg-[#F5F5F5] ">
@@ -75,10 +80,10 @@ useEffect(() => {
                     <CarouselContent>
                       {property.images.map((image: any, index: number) => (
                         <CarouselItem key={index}>
-                          <div className="relative">
-                            <Image src={image} className="brightness-75" width={450} height={350} alt="imageojck" />
+                          <div className="relative w-full h-[300px]">
+                            <img src={image} className="brightness-75 w-full h-full"  alt="imageojck" />
                             <div className="absolute inset-0 bg-black opacity-20"></div>
-                          </div>
+                          </div> 
                         </CarouselItem>
                       ))}
                     </CarouselContent>
@@ -101,42 +106,41 @@ useEffect(() => {
                   <div className="w-full">
                   {
                                 property.category.name === 'apartment'? (
-                                    <ul className="flex bg-secondaryColor items-end p-4 justify-start gap-4 md:gap-10 w-full ">
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.bedrooms}</p>
-                                        <p className="text-customGrey text-sm mt-2" >Bedroom</p>
-                                    </li>
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.bathrooms}</p>
-                                        <p className="text-customGrey text-sm mt-2">Bathroom</p>
-                                    </li>
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.kitchen}</p>
-                                        <p className="text-customGrey text-sm mt-2">Kitchen</p>
-                                    </li>
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.hasStorage ? 'Yes' : 'No'}</p>
-                                        <p className="text-customGrey text-sm mt-2">Storage</p>
-                                    </li>
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.gate ? 'Yes' : 'No'}</p>
-                                        <p className="text-customGrey text-sm mt-2">Gate</p>
-                                    </li>
-                                    <li>
-                                        <p className='text-base text-customBlack'>{property.gateman ? 'Yes' : 'No'}</p>
-                                        <p className="text-customGrey text-sm mt-2">Gate man</p>
-                                    </li>
-                                </ul>
+                                  <ul className="flex bg-secondaryColor items-end p-4 justify-evenly w-full ">
+                                  <li>
+                                      <p>{property.bedrooms}</p>
+                                      <p className="text-customGrey text-sm mt-2" >Bedroom</p>
+                                  </li>
+                                  <li>
+                                      <p>{property.bathrooms}</p>
+                                      <p className="text-customGrey text-sm mt-2">Bathroom</p>
+                                  </li>
+                                  <li>
+                                      <p>{property.hasStorage ? 'Yes' : 'No'}</p>
+                                      <p className="text-customGrey text-sm mt-2">Storage</p>
+                                  </li>
+                                  <li>
+                                      <p className="text-primaryColor text-sm">More+</p>
+                                  </li>
+                              </ul>
                                 ) : (
-                                    <div></div>
+                              <div></div>
                                 )
                             }
                   </div>
   
-                  <div className="flex p-4  gap-2 items-center justify-between w-full">
+                  <div className="flex p-4 shadow-xl  md:shadow-none gap-2 items-center justify-between w-full">
                   <div className="flex items-center gap-2">
-                      <p><MdAccountCircle size={28} className="text-primaryColor" /></p>
-                      <p className="text-customGrey text-sm">{property.user.firstName}</p>
+                  {
+                    user ? (
+                      <img
+                      className="w-8 h-8 bg-black rounded-full object-cover"
+                      src={property.user.image} // Replace with your profile image path
+                      alt="Profile"
+                      onClick={() => handleUserClick(property.user)}
+                  />
+                    ) : (<p><MdAccountCircle size={28} className="text-primaryColor" /></p>)
+                  }                      <p className="text-customGrey text-sm">{property.user.firstName}</p>
                     </div>
                     <div className="flex items-center gap-2" >
                       <p><CalendarClock className="text-primaryColor" /></p>
@@ -163,6 +167,23 @@ useEffect(() => {
 
     <Footer />
 
+    {selectedUser && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold mb-4">User Information</h2>
+          <p><strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}</p>
+          <p><strong>Email:</strong> {selectedUser.email}</p>
+          <p><strong>Phone:</strong>  <a href={`https://wa.me/${parseInt(selectedUser.phone.slice(1))}`} className="text-primaryColor" target="_blank">Chat via whatApp</a></p>
+          <button 
+            onClick={() => setSelectedUser(null)}
+            className="mt-4 bg-primaryColor text-white px-4 py-2 rounded"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+<AiFeature />
   </section>
   );
 }
