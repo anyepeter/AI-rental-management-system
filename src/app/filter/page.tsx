@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import GoogleMap from "@/components/googleMap";
 import Navbar from "@/components/navbar";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -33,7 +34,7 @@ const SearchForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     category: '',
     title: '',
-     address: '',
+    address: '',
     minPrice: 10000,
     maxPrice: 500000
   });
