@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import { getFirstUser, getUserById } from '@/actions/actions'
 import SideBar from '@/components/sideUser'

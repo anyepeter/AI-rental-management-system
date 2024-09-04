@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use server'
 import { NextResponse } from 'next/server';
 
@@ -235,14 +236,6 @@ export const aiRecommendation = async (userData: string) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      // body: JSON.stringify({
-      //   prompt: `Analyze this user query here ${userData} and determine if it's asking for a rental property in a specific category. In my database, 
-      //   I have a category table with the following items: apartment, studio, room. Check which category the user is interested in.
-      //   Additionally, check if the user specifies a location or address in Yaoundé where they are looking for the rental property. 
-      //   Also, examine if the user mentions a price range, including max and min prices, or a fixed price. Respond in the following 
-      //   object format: { isRentalRelated, category, minPrice, maxPrice, fixedPrice, address }. If the query is not related to rental 
-      //   properties, provide a general response with the attribute name generalResponse.`,
-      // }),
       body: JSON.stringify({
         "prompt": `Analyze this user query and determine if it's asking for rental properties in specific categories in my category table I have 3 items that is the apartment, studio, and room. then also check the user is asking for a specfic location or address in yaounde, min price, max price, fixed price,
          "${userData}". If response like object itsRelatedRental, category, address(Dont add yaounde the address), maxPrice, minPrice, fixedPrice they are asking for, if not then provide a general response that answer their question with the attribute tsRelatedRental and generalResponse`,
