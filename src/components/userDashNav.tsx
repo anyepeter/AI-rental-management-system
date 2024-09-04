@@ -39,7 +39,7 @@ const Nav = () => {
         <div><Link href="/" ><Image src="/images/logo.png" width={80} height={80} alt="Float UI logo" /></Link></div>
         <div>
           <ul className='flex justify-between gap-4 items-center font-Muli'>
-            <li className='self-start mt-2'><p>Welcome <span>peter</span></p></li>
+            <li className='self-start mt-2 text-white'><p>Welcome <span>peter</span></p></li>
             <li>
               <UserButton />
             </li>

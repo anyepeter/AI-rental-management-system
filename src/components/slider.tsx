@@ -13,9 +13,11 @@ import 'swiper/css/navigation';
 // import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
-const Slider: React.FC = () => {
+const Slider: React.FC = ({images}: any) => {
   const progressCircle = useRef<SVGSVGElement | null>(null);
   const progressContent = useRef<HTMLSpanElement | null>(null);
+
+  console.log(images)
 
   // Handler for autoplay progress
   const onAutoplayTimeLeft = useCallback(
@@ -43,17 +45,13 @@ const Slider: React.FC = () => {
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
-        className="mySwiper"
+        className="min-h-[500px] h-auto"
       >
-        <SwiperSlide><img src='./images/01.jpeg'  /></SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 6</SwiperSlide>
-        <SwiperSlide>Slide 7</SwiperSlide>
-        <SwiperSlide>Slide 8</SwiperSlide>
-        <SwiperSlide>Slide 9</SwiperSlide>
+        {images.map((image: any) => (
+          <SwiperSlide key={image}>
+            <img src={image} className='h-auto w-[auto]' alt="slide" />
+          </SwiperSlide>
+        ))}
         <div className="autoplay-progress" slot="container-end">
           <svg viewBox="0 0 48 48" ref={progressCircle}>
             <circle cx="24" cy="24" r="20"></circle>

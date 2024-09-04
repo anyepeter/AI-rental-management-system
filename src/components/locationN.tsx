@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { googleApiKey } from '@/lib/secret';
@@ -42,20 +42,25 @@ function LocationN({ address, onMapClick }: LocationNProps) {
       });
       map.fitBounds(bounds);
       setMap(map);
-  
+
       map.addListener('click', (event: google.maps.MapMouseEvent) => {
         if (event.latLng) {
           const lat = event.latLng.lat();
           const lng = event.latLng.lng();
-  
+
+          console.log(`Latitude: ${lat}, Longitude: ${lng}`); // Log the latitude and longitude
+
+          // Trigger the callback with the new coordinates
           onMapClick(lat, lng);
-  
+
           const newCenter = { lat, lng };
           map.panTo(newCenter);
-  
+
+          // Move the marker to the new location
           if (marker) {
             marker.setPosition(newCenter);
           } else {
+            // Add a new marker if it doesn't exist
             const newMarker = new google.maps.Marker({
               position: newCenter,
               map,
@@ -71,11 +76,11 @@ function LocationN({ address, onMapClick }: LocationNProps) {
     },
     [map, marker, onMapClick, address]
   );
-  
 
   const onUnmount = useCallback(() => {
     if (marker) {
       marker.setMap(null);
+      setMarker(null); // Ensure marker is completely removed
     }
     setMap(null);
   }, [marker]);
@@ -89,7 +94,7 @@ function LocationN({ address, onMapClick }: LocationNProps) {
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      <></>
+      {/* Add other map elements here if needed */}
     </GoogleMap>
   ) : (
     <></>

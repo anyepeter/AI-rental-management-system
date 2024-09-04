@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs'
-// import { useDispatch, useSelector } from'react-redux'
-// import { getAllSites, getUser } from '@/actions/actions'
-// import { addUser, increment } from '../../app/globalRedux/site/siteSlice'
+import { getAllProperties, getUserById } from '@/actions/actions'
+import { useDispatch, useSelector } from'react-redux'
+import { addUser, fetchAllProperty } from '@/app/globalRedux/property/propertySlice'
 
 
 export default () => {
@@ -15,7 +15,7 @@ export default () => {
     const router = useRouter()
     const [state, setState] = useState(false)
     const navRef = useRef<HTMLElement>(null)
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
     const { user } = useUser()
 
     const userId = user?.id; // or user?.email or user?.clerkUserId based on your setup
@@ -29,41 +29,41 @@ export default () => {
       { title: "Contact", path: "/contact" },
     ];
   
-    // useEffect(() => {
-    //   const fetchUser = async () => {
-    //     if (!userId) {
-    //       console.error('User ID is missing');
-    //       return;
-    //     }
+    useEffect(() => {
+      const fetchUser = async () => {
+        if (!userId) {
+          console.error('User ID is missing');
+          return;
+        }
   
-    //     try {
-    //       const userData = await getUser(userId); // Assuming getUser expects an object with userId
-    //       dispatch(addUser(userData));
-    //     } catch (error) {
-    //       console.error('Error fetching user:', error);
-    //     }
-    //   };
+        try {
+          const userData = await getUserById(userId); // Assuming getUser expects an object with userId
+          dispatch(addUser(userData));
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      };
   
-    //   fetchUser();
-    // }, [userId, dispatch]);
+      fetchUser();
+    }, [userId, dispatch]);
 
-    // useEffect(() => {
-    //     const fetchSites = async () => {
-    //       try {
-    //         const sitesData = await getAllSites()
-    //         dispatch(increment(sitesData))
-    //       } catch (error) {
-    //         console.error('Error fetching sites:', error)
-    //       }
-    //     }
+    useEffect(() => {
+        const fetchSites = async () => {
+          try {
+            const sitesData = await getAllProperties()
+            dispatch(fetchAllProperty(sitesData))
+          } catch (error) {
+            console.error('Error fetching sites:', error)
+          }
+        }
       
-    //     fetchSites()
-    //   }, [dispatch])
+        fetchSites()
+      }, [dispatch])
 
 
 
     const handleDashboardClick = () => {
-        if (user?.id === 'user_2kLCMG7aZI6RRqCy4pK8FgnffaZ') {
+        if (user?.id === 'user_2lbYGMvlajh6IOEww2em1vbeLOP') {
             router.push('/admin')
         } else {
             router.push('/dashboard')

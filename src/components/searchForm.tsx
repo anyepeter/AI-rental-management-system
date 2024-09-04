@@ -1,8 +1,13 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import Nouislider from "nouislider-react";
 import "nouislider/distribute/nouislider.css";
+import { getAllCategories } from '@/actions/actions';
+import { useRouter } from "next/navigation"; 
+import { useDispatch, useSelector } from 'react-redux';
+import { filterProperties } from '@/app/globalRedux/property/propertySlice';
+import toast from 'react-hot-toast';
 
 interface FormData {
   category: string;
@@ -28,13 +33,25 @@ const SearchForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     category: '',
     title: '',
-    location: '',
-    region: '',
-    minPrice: 0,
-    maxPrice: 100
+     address: '',
+    minPrice: 10000,
+    maxPrice: 500000
   });
+  const [categories, setCategories] = useState([]);
+const dispatch = useDispatch();
+const router = useRouter(); 
+
+  useEffect(() => {
+    const fetchCategoriesAndSection = async () => {
+      setCategories(await getAllCategories()); 
+
+    };
+    fetchCategoriesAndSection();
+  }, []);
+
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     setFormData({
@@ -51,9 +68,43 @@ const SearchForm: React.FC = () => {
     });
   };
 
+  const { properties } = useSelector((state: any) => state.property);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.category) {
+      toast.error("Please select a category.")
+      return; // Exit the function without proceeding
+    }
+
+    
+    setIsLoading(true);
+
+    setTimeout(() => {
+    const results = properties?.filter(item => {
+      return (
+        (!formData.category || item.category.name.toLowerCase().includes(formData.category.toLowerCase())) &&
+        (!formData.title || item.title.toLowerCase().includes(formData.title.toLowerCase())) &&
+        (!formData.location || item.address.toLowerCase().includes(formData.location.toLowerCase())) &&
+        (item.price >= formData.minPrice && item.price <= formData.maxPrice)
+      );
+    });
+
+    dispatch(filterProperties(results));
+  
+    setIsLoading(false);
+
+    router.push('/filter');
+    
+  }, 1000);
+  };
+  
+
   return (
     <div className='w-full flex justify-center bg-secondaryColor p-4'>
       <form
+      onSubmit={handleSearch}
         className="w-full flex flex-col max-w-4xl justify-center gap-4"
       >
         <div className='w-full flex flex-col md:flex-row gap-4'>
@@ -68,7 +119,14 @@ const SearchForm: React.FC = () => {
                 onChange={handleChange}
                 className="w-full h-12 pl-4 pr-4 py-2 leading-tight text-gray-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline"
               >
-                <option value="">{('AllCategory')}</option>
+                <option value="">{('Select Category')}</option>
+                {
+                  categories.map((category: any) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))
+                }
               </select>
             </div>
             <div className="w-full md:max-w-[400px]">
@@ -79,7 +137,7 @@ const SearchForm: React.FC = () => {
               value={formData.location}
               onChange={handleChange}
               className="w-full h-12 pl-4 pr-4 py-2 leading-tight text-gray-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline"
-              placeholder={('Quarter')}
+              placeholder={('Address')}
             />
           </div>
           </div>
@@ -94,7 +152,7 @@ const SearchForm: React.FC = () => {
                 value={formData.title}
                 onChange={handleChange}
                 className="w-full h-12 pl-4 pr-4 py-2 leading-tight text-gray-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline"
-                placeholder={('TitleForm')}
+                placeholder={('property name')}
               />
             </div>
           </div>
@@ -104,21 +162,21 @@ const SearchForm: React.FC = () => {
             <label htmlFor="price-range" className="sr-only">{('Price Range')}</label>
             <Nouislider
               id="price-range"
-              range={{ min: 0, max: 1000 }}
+              range={{ min: 10000, max: 500000 }}
               start={[formData.minPrice, formData.maxPrice]}
               connect
               onChange={handlePriceChange}
               style={{ height: '20px',
                 margin: '0px 10px 0px 10px',
-                background: 'red',
+                background: 'white',
                 border: '1px solid #ccc',
 
                }}
             />
           
             <div className="flex justify-between mt-2">
-              <span>Min: ${formData.minPrice}</span>
-              <span>Max: ${formData.maxPrice}</span>
+              <span>Min: {formData.minPrice} cfa</span>
+              <span>Max: {formData.maxPrice} cfa</span>
             </div>
           </div>
           <div className="w-full">
@@ -127,7 +185,7 @@ const SearchForm: React.FC = () => {
               type="submit"
               className="w-full h-12 bg-[#16C788] flex justify-center items-center text-white font-bold py-2 px-4 rounded self-end"
             >
-              {isLoading ? <Loader2 color="white" className='animate-spin' /> : ('formSearch')}
+              {isLoading ? <Loader2 color="white" className='animate-spin' /> : ('Search')}
             </button>
           </div>
         </div>

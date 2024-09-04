@@ -37,7 +37,7 @@ const SideBar = () => {
   );
 
   return (
-    <div className="fixed top-20 bg-customBlack w-full z-[10] sm:h-screen sm:w-[12%] md:w-[20%] pb-4">
+    <div className="fixed top-20 bg-customBlack text-white w-full z-[10] sm:h-screen sm:w-[12%] md:w-[20%] pb-4">
       <div className='sm:hidden flex justify-between items-center pl-2 pr-2'>
         <p onClick={() => setToggleDropdown((prev) => !prev)}>Open Dashboard Navigation</p>
         <RxDropdownMenu onClick={() => setToggleDropdown((prev) => !prev)} />

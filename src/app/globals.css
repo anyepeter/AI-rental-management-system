@@ -190,3 +190,14 @@
       align-items: flex-start;
       flex-direction: column;
   }
+
+  .noUi-horizontal {
+    height: 10px !important;
+}
+
+.noUi-horizontal .noUi-handle {
+  width: 22px !important;  
+  height: 19px !important;
+  right: -17px;
+  top: -6px;
+}
